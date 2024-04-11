@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package org.example.temperaturecontrol;
+
+option java_multiple_files = true;
+option java_package = "org.example.temperaturecontrol.temperaturecontrolservice";
+option java_outer_classname = "temperaturecontrolserviceproto";
+
+service temperaturecontrolservice {
+  // LightControl streaming RPC
+  rpc temperaturecontrolStream(stream TemperaturecontrolRequest) returns (stream TemperaturecontrolResponse);
+}
+
+message TemperaturecontrolRequest {
+  string message = 1;
+}
+
+message TemperaturecontrolResponse {
+  string message = 1;
+}

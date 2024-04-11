@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package org.example.lightcontrol;
+
+option java_multiple_files = true;
+option java_package = "org.example.lightcontrol.lightcontrolservice";
+option java_outer_classname = "lightcontrolserviceproto";
+
+service lightcontrolservice {
+  // LightControl streaming RPC
+  rpc lightcontrolStream(stream LightcontrolRequest) returns (stream LightcontrolResponse);
+}
+
+message LightcontrolRequest {
+  string message = 1;
+}
+
+message LightcontrolResponse {
+  string message = 1;
+}
