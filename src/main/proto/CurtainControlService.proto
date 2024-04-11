@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package org.example.curtaincontrol;
+
+option java_multiple_files = true;
+option java_package = "org.example.curtaincontrol.curtiancontrolservice";
+option java_outer_classname = "curtiancontrolserviceproto";
+
+service curtiancontrolservice {
+  // LightControl streaming RPC
+  rpc curtiancontrolStream(stream CurtiancontrolRequest) returns (stream CurtiancontrolResponse);
+}
+
+message CurtiancontrolRequest {
+  string message = 1;
+}
+
+message CurtiancontrolResponse {
+  string message = 1;
+}
