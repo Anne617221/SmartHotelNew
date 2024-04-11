@@ -1,4 +1,4 @@
-package LightContol;
+package SmartHotelServer;
 
 public class LightControlServer {
 }

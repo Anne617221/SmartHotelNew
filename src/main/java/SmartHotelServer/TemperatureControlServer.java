@@ -1,4 +1,4 @@
-package TemperatureControl;
+package SmartHotelServer;
 
 public class TemperatureControlServer {
 }

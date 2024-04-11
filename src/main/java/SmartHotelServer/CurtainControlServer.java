@@ -1,4 +1,4 @@
-package CurtianControl;
+package SmartHotelServer;
 
 public class CurtainControlServer {
 }
