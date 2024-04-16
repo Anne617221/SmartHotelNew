@@ -1,5 +1,5 @@
 package SmartHotelServer;
-import org.example.curtaincontrol.curtiancontrolservice.CurtiancontrolRequest;
+
 import  org.example.lightcontrol.lightcontrolservice.*;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
