@@ -1,10 +1,12 @@
 package SmartHotelServer;
 
 
-import org.example.lightcontrol.lightcontrolservice.*;
+import org.example.curtaincontrol.curtaincontrolservice.*;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import org.example.lightcontrol.lightcontrolservice.LightcontrolRequest;
+
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +17,7 @@ public class CurtainControlServer{
 
     public static void main(String[] args) throws IOException, InterruptedException {
         Server server = ServerBuilder.forPort(PORT)
-                .addService(new CurtianControlImpl())
+                .addService(new CurtainControlImpl())
                 .build();
 
         server.start();
@@ -35,18 +37,17 @@ public class CurtainControlServer{
     }
 
 
-    static class CurtainControlImpl extends curtiancontrolserviceGrpc.curtiancontrolserviceImplBase {
-
+    static class CurtainControlImpl extends curtaincontrolserviceGrpc.curtaincontrolserviceImplBase {
         @Override
-        public StreamObserver<CurtiancontrolRequest> lightcontrolStream(StreamObserver<CurtiancontrolResponse> responseObserver) {
-            return new StreamObserver <CurtiancontrolRequest>() {
+        public StreamObserver<CurtaincontrolRequest> curtaincontrolStream(StreamObserver<CurtaincontrolResponse> responseObserver) {
+            return new StreamObserver<CurtaincontrolRequest>() {
                 @Override
-                public void onNext(CurtiancontrolRequest request) {
+                public void onNext(LightcontrolRequest request) {
                     System.out.println("Received message from client: " + request.getMessage());
 
                     // Respond to the client's message with a stream
                     for (int i = 0; i < 5; i++) {
-                        CurtiancontrolResponse response = CurtiancontrolResponse.newBuilder()
+                        CurtaincontrolResponse response = CurtaincontrolResponse.newBuilder()
                                 .setMessage("Response " + i)
                                 .build();
                         responseObserver.onNext(response);
@@ -68,5 +69,6 @@ public class CurtainControlServer{
         }
     }
 }
+
 
 
