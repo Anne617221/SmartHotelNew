@@ -7,14 +7,14 @@ option java_package = "org.example.curtaincontrol.curtaincontrolservice";
 option java_outer_classname = "curtaincontrolserviceproto";
 
 service curtaincontrolservice {
-  // LightControl streaming RPC
-  rpc curtaincontrolStream(stream CurtaincontrolRequest) returns (stream CurtaincontrolResponse);
+  // LightControl Simple RPC
+  rpc curtaincontrol( SimpleCurtaincontrolRequest) returns ( SimpleCurtaincontrolResponse);
 }
 
-message CurtaincontrolRequest {
+message SimpleCurtaincontrolRequest {
   string message = 1;
 }
 
-message CurtaincontrolResponse {
+message SimpleCurtaincontrolResponse {
   string message = 1;
 }

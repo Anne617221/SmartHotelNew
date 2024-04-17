@@ -6,15 +6,22 @@ option java_multiple_files = true;
 option java_package = "org.example.lightcontrol.lightcontrolservice";
 option java_outer_classname = "lightcontrolserviceproto";
 
-service lightcontrolservice {
-  // LightControl streaming RPC
-  rpc lightcontrolStream(stream LightcontrolRequest) returns (stream LightcontrolResponse);
+service Lightcontrolservice {
+  // Light turn on and off Client-side streaming RPC
+  rpc ToggleLights(stream ToggleRequest) returns (LightcontrolRespons);
+}
+  //
+  rpc changeLightColor(ColorRequest) returns(stream LightcontrolResponse)
+
+message ToggleRequest{
+  string light_id = 1;
+  bool turn_on=2;
 }
 
-message LightcontrolRequest {
-  string message = 1;
+message ColorRequest {
+  string light_id = 1;
+  string color=2;
 }
-
-message LightcontrolResponse {
-  string message = 1;
+message LightcontrolRespons{
+  string message=1;
 }
