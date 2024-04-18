@@ -9,9 +9,17 @@ import io.grpc.ManagedChannelBuilder;
 
 import java.util.List;
 public class SmartHotelClient {
-//    private final TemperatureControlGrpc.TemperatureControlBlockingStub temperatureControlStub;
-//    private final LightControlGrpc.LightControlBlockingStub lightControlStub;
-//    private final CurtainControlGrpc.CurtainControlBlockingStub curtainControlStub;
+    private static final String SERVER_HOST = "localhost";
+    private static final int SERVER_PORT = 8080;
+    public static void main(String[] args) {
+        // Create a channel to the server
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(SERVER_HOST, SERVER_PORT)
+                .usePlaintext()
+                .build();
+
+        private final TemperaturecontrolserviceGrpc.TemperatureControlBlockingStub temperatureControlStub;
+        private final LightControlserviceGrpc.LightControlBlockingStub lightControlStub;
+        private final CurtainControlserviceGrpc.CurtainControlBlockingStub curtainControlStub;
 //
 //    public SmartHotelClient(String host, int temperaturePort, int lightPort, int curtainPort) {
 //

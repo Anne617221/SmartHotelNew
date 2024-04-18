@@ -11,7 +11,7 @@ service Lightcontrolservice {
   rpc ToggleLights(stream ToggleRequest) returns (LightcontrolRespons);
 
   //
-  rpc changeLightColor(ColorRequest) returns(stream LightcontrolResponse);
+  rpc changeLightColor(ColorRequest) returns(stream LightcontrolRespons);
 
 }
 message ToggleRequest{
