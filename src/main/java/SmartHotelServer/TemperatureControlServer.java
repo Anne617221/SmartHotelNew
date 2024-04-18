@@ -8,14 +8,16 @@ import org.example.temperaturecontrol.temperaturecontrolservice.*;
 
 
 import java.io.IOException;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public  class TemperatureControlServer {
     private static final int PORT = 8080;
+    private static final int Temperature_check_interval=15*60*1000;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         Server server = ServerBuilder.forPort(PORT)
-                .addService(new TemperaturecontrolServer.TemperatureControlImpl())
+                .addService(new TemperatureControlServer.TemperatureControlImpl())
                 .build();
 
         server.start();
@@ -41,12 +43,15 @@ public  class TemperatureControlServer {
             return new StreamObserver<TemperaturecontrolRequest>() {
                 @Override
                 public void onNext(TemperaturecontrolRequest request) {
-                    System.out.println("Received message from client: " + request.getMessage());
-
-                    // Respond to the client's message with a stream
-                    for (int i = 0; i < 5; i++) {
-                        TemperaturecontrolResponse response = TemperaturecontrolResponse.newBuilder()
-                                .setMessage("Response " + i)
+                    int temperature=getTemperature();
+                    if(temperature<15){
+                        TemperaturecontrolResponse response=TemperaturecontrolResponse.newBuilder()
+                                .setMessage("Switch on")
+                                .build();
+                        responseObserver.onNext(response);
+                    }else if(temperature>25){
+                        TemperaturecontrolResponse response=TemperaturecontrolResponse.newBuilder()
+                                .setMessage("seitch off")
                                 .build();
                         responseObserver.onNext(response);
                     }
@@ -64,6 +69,14 @@ public  class TemperatureControlServer {
                     responseObserver.onCompleted(); // Complete the response stream
                 }
             };
+        }
+        private int getTemperature(){
+            return 25;
+        }
+    }
+    static class TemperatureMOnitoringTask extends TimerTask{
+        public void run(){
+            System.out.println("Temperature monitoring task executed");
         }
     }
 }

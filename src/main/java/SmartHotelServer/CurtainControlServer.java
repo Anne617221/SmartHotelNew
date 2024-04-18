@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 
-public class CurtainControlServer{
+public class CurtainControlServer {
     private static final int PORT = 8080;
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -39,36 +39,27 @@ public class CurtainControlServer{
 
     static class CurtainControlImpl extends curtaincontrolserviceGrpc.curtaincontrolserviceImplBase {
         @Override
-        public StreamObserver<CurtaincontrolRequest> curtaincontrolStream(StreamObserver<CurtaincontrolResponse> responseObserver) {
-            return new StreamObserver<CurtaincontrolRequest>() {
-                @Override
-                public void onNext(LightcontrolRequest request) {
-                    System.out.println("Received message from client: " + request.getMessage());
+        public void curtaincontrol(CurtaincontrolRequest request, StreamObserver<CurtaincontrolResponse> responseObserver) {
 
-                    // Respond to the client's message with a stream
-                    for (int i = 0; i < 5; i++) {
-                        CurtaincontrolResponse response = CurtaincontrolResponse.newBuilder()
-                                .setMessage("Response " + i)
-                                .build();
-                        responseObserver.onNext(response);
-                    }
-                }
+            System.out.println("Received message from client: " + request.getMessage());
+
+            CurtaincontrolResponse response = CurtaincontrolResponse.newBuilder()
+                    .setMessage("Curtain controlled successfully ")
+                    .build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
 
 
-                @Override
-                public void onError(Throwable t) {
-                    System.err.println("Error from client: " + t.getMessage());
-                }
-
-                @Override
-                public void onCompleted() {
-                    System.out.println("Client stream completed");
-                    responseObserver.onCompleted(); // Complete the response stream
-                }
-            };
+        @Override
+        public void onError(Throwable t) {
+            System.err.println("Error from client: " + t.getMessage());
         }
     }
 }
+
+
+
 
 
 

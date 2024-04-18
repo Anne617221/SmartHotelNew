@@ -9,10 +9,11 @@ option java_outer_classname = "lightcontrolserviceproto";
 service Lightcontrolservice {
   // Light turn on and off Client-side streaming RPC
   rpc ToggleLights(stream ToggleRequest) returns (LightcontrolRespons);
-}
-  //
-  rpc changeLightColor(ColorRequest) returns(stream LightcontrolResponse)
 
+  //
+  rpc changeLightColor(ColorRequest) returns(stream LightcontrolResponse);
+
+}
 message ToggleRequest{
   string light_id = 1;
   bool turn_on=2;
