@@ -3,7 +3,7 @@ syntax = "proto3";
 package org.example.lightcontrol;
 
 option java_multiple_files = true;
-option java_package = "org.example.lightcontrol.lightcontrolservice";
+option java_package = "org.example.lightcontrol";
 option java_outer_classname = "lightcontrolserviceproto";
 
 service Lightcontrolservice {
@@ -11,7 +11,7 @@ service Lightcontrolservice {
   rpc ToggleLights(stream ToggleRequest) returns (LightcontrolRespons);
 
   //
-  rpc changeLightColor(ColorRequest) returns(stream LightcontrolRespons);
+  rpc ChangeLightColor(ColorRequest) returns(stream LightcontrolRespons);
 
 }
 message ToggleRequest{
