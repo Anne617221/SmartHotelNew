@@ -7,6 +7,8 @@ import org.example.lightcontrol.ColorRequest;
 import org.example.lightcontrol.LightcontrolRespons;
 import org.example.lightcontrol.LightcontrolserviceGrpc;
 import org.example.lightcontrol.ToggleRequest;
+import org.example.temperaturecontrol.TemperaturecontrolRequest;
+import org.example.temperaturecontrol.TemperaturecontrolResponse;
 
 public class SmartHotelClient {
     //curtain function
@@ -18,7 +20,12 @@ public class SmartHotelClient {
     ManagedChannel lightchannel = ManagedChannelBuilder.forAddress("localhost", 8080)
             .usePlaintext()
             .build();
-    LightcontrolserviceGrpc.LightcontrolserviceBlockingStub lightstub = LightcontrolserviceGrpc.newBlockingStub(channel);
+    LightcontrolserviceGrpc.LightcontrolserviceBlockingStub lightStub = LightcontrolserviceGrpc.newBlockingStub(lightchannel);
+
+    ManagedChannel temperaturechannel = ManagedChannelBuilder.forAddress("localhost", 8082)
+            .usePlaintext()
+            .build();
+    TemperaturecontrolserviceGrpc.TemperaturecontrolserviceBlockingStub temperatureStub = TemperaturecontrolserviceGrpc.newBlockingStub(temperaturechannel);
     //curtains
     public void toggleCurtain(String command){
         SimpleCurtaincontrolRequest request = SimpleCurtaincontrolRequest.newBuilder()
@@ -50,10 +57,26 @@ public class SmartHotelClient {
         lightchannel.shutdown();
     }
     }
-    //
+    //curtain
     public static void main(String[] args) {
         SmartHotelClient client = new SmartHotelClient();
         client.toggleCurtain("opens");
         client.toggleCurtain("close");
     }
+
+public void controlTemperature() {
+    // Example usage of client
+    TemperaturecontrolRequest request = TemperaturecontrolRequest.newBuilder().setMessage("Control temperature").build();
+    TemperaturecontrolResponse response = blockingStub.temperaturecontrolStream(request);
+    System.out.println("Response from server: " + response.getMessage());
 }
+
+public static void main(String[] args) throws Exception {
+    TemperatureControlClient client = new TemperatureControlClient("localhost", 8082);
+    try {
+        client.controlTemperature();
+    } finally {
+        client.shutdown();
+    }
+}
+

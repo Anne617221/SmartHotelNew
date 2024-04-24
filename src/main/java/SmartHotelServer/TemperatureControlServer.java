@@ -106,6 +106,32 @@ public  class TemperatureControlServer {
     }
 
     static class TemperatureControlImpl extends temperaturecontrolserviceGrpc.temperaturecontrolserviceImplBase {
+        public void temperaturecontrolStream(TemperaturecontrolRequest request, StreamObserver<TemperaturecontrolResponse> responseObserver) {
+            // Implement temperature control logic here
+            // Example logic:
+            double temperature = getCurrentTemperature();
+            if (temperature < 17) {
+                // Turn on
+                TemperaturecontrolResponse response = TemperaturecontrolResponse.newBuilder().setMessage("Turning on").build();
+                responseObserver.onNext(response);
+            } else if (temperature > 25) {
+                // Turn off
+                TemperaturecontrolResponse response = TemperaturecontrolResponse.newBuilder().setMessage("Turning off").build();
+                responseObserver.onNext(response);
+            }
+            responseObserver.onCompleted();
+        }
 
+        // Example method to get current temperature
+        private double getCurrentTemperature() {
+            // Implement logic to get current temperature from sensor
+            return 20.0; // Dummy value for demonstration
+        }
     }
-}
+
+    private void awaitTermination() throws InterruptedException {
+        if (server != null) {
+            server.awaitTermination();
+        }
+    }
+    }
