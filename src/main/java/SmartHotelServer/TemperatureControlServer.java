@@ -122,10 +122,44 @@ public  class TemperatureControlServer {
             responseObserver.onCompleted();
         }
 
+
+
         // Example method to get current temperature
         private double getCurrentTemperature() {
             // Implement logic to get current temperature from sensor
             return 20.0; // Dummy value for demonstration
+        }
+
+        @Override
+        public StreamObserver<TemperatureStreamRequest> temperatureStream(StreamObserver<TemperatureStreamResponse> responseObserver) {
+            return new StreamObserver<TemperatureStreamRequest>() {
+                @Override
+                public void onNext(TemperatureStreamRequest request) {
+                    double temperature = request.getTemperature();
+                    System.out.println("Received temperature data: " + temperature);
+
+                    // Determine whether to turn on/off the light based on temperature
+                    boolean turnOnLight = temperature > 30; // Example condition, adjust as needed
+
+                    // Send the response to control light
+                    TemperatureStreamResponse response = TemperatureStreamResponse.newBuilder()
+                            .setTurnOnLight(turnOnLight)
+                            .build();
+
+                    responseObserver.onNext(response);
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    System.err.println("Temperature Control Stream Error: " + t.getMessage());
+                }
+
+                @Override
+                public void onCompleted() {
+                    System.out.println("Temperature Control Stream completed.");
+                    responseObserver.onCompleted();
+                }
+            };
         }
     }
 

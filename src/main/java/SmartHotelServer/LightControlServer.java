@@ -105,6 +105,11 @@ public class LightControlServer {
     static class LightControlImpl extends LightcontrolserviceGrpc.LightcontrolserviceImplBase {
         @Override
         public void changeLightColor(ColorRequest request, StreamObserver<LightcontrolRespons> responseObserver){
+            String color = request.getColor();
+            LightcontrolRespons response = LightcontrolRespons.newBuilder().setMessage("Changing light color to " + color).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+
             try{
                 LightcontrolRespons message = LightcontrolRespons.newBuilder().setMessage("Turning on").build();
                 responseObserver.onNext(message);
@@ -116,9 +121,41 @@ public class LightControlServer {
             }
         }
 
+
     }
-        public void toggleLights(ToggleRequest request, io.grpc.stub.StreamObserver<LightcontrolRespons> responseObserver) {
-        // Implement toggleLights functionality here
+    public StreamObserver<ToggleRequest> toggleLights(final StreamObserver<LightcontrolRespons> responseObserver) {
+        return new StreamObserver<ToggleRequest>() {
+            @Override
+            public void onNext(ToggleRequest request) {
+                // Handle the request
+                String lightId = request.getLightId();
+                boolean turnOn = request.getTurnOn();
+
+                // Simulate toggling the light
+                String message;
+                if (turnOn) {
+                    message = "Turned on light " + lightId;
+                } else {
+                    message = "Turned off light " + lightId;
+                }
+
+                // Create and send the response
+                LightcontrolRespons response = LightcontrolRespons.newBuilder().setMessage(message).build();
+                responseObserver.onNext(response);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                // Handle errors
+                System.err.println("Error: " + t.getMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                // Finish the response
+                responseObserver.onCompleted();
+            }
+        };
     }
 
 

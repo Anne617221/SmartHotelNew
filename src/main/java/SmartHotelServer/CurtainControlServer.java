@@ -6,7 +6,6 @@ import com.ecwid.consul.v1.agent.model.NewService;
 import org.example.curtaincontrol.*;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.stub.StreamObserver;
 
 
 import java.io.FileInputStream;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 
 public class CurtainControlServer {

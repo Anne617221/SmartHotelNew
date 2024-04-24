@@ -9,6 +9,8 @@ option java_outer_classname = "temperaturecontrolserviceproto";
 service temperaturecontrolservice {
   // LightControl streaming RPC
   rpc temperaturecontrolStream(stream TemperaturecontrolRequest) returns (stream TemperaturecontrolResponse);
+  rpc temperatureStream(stream TemperatureStreamRequest) returns (stream TemperatureStreamResponse);
+
 }
 
 message TemperaturecontrolRequest {
@@ -17,4 +19,12 @@ message TemperaturecontrolRequest {
 
 message TemperaturecontrolResponse {
   string message = 1;
+}
+
+message TemperatureStreamRequest {
+  double temperature = 1;
+}
+
+message TemperatureStreamResponse {
+  bool turn_on_light = 1;
 }
