@@ -18,7 +18,7 @@ public class LightControlServer {
     private static final int PORT = 8080;
     Server server;
 
-    private void start() throws IOException {
+    public void start() throws IOException {
 
         server = ServerBuilder.forPort(PORT)
                 .addService(new LightControlImpl())

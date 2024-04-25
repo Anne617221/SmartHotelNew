@@ -19,7 +19,7 @@ public class CurtainControlServer {
     private static final int PORT = 8081;
     Server server;
 
-    private void start() throws IOException {
+    public void start() throws IOException {
 
         server = ServerBuilder.forPort(PORT)
                 .addService(new CurtainControlImpl())

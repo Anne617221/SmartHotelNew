@@ -1,55 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SmartHotel">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.SmartHotelController">
    <children>
-      <Accordion />
-      <Accordion layoutX="163.0" layoutY="47.0" prefHeight="0.0" prefWidth="0.0" />
-      <MenuBar layoutX="179.0" layoutY="173.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="240.0" AnchorPane.rightAnchor="181.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="Light">
-            <items>
-              <MenuItem mnemonicParsing="false" text="turn on" />
-                  <MenuItem mnemonicParsing="false" text="turn off" />
-                  <MenuItem mnemonicParsing="false" text="change color" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Curtain">
-            <items>
-              <MenuItem mnemonicParsing="false" text="open" />
-                  <MenuItem mnemonicParsing="false" text="close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Temperature">
-            <items>
-              <MenuItem mnemonicParsing="false" text="turn on" />
-                  <MenuItem mnemonicParsing="false" text="turn off" />
-                  <MenuItem fx:id="monitorTemperature" mnemonicParsing="false" text="CurrentTemperature" />
-            </items>
-          </Menu>
-        </menus>
-         <cursor>
-            <Cursor fx:constant="S_RESIZE" />
-         </cursor>
-      </MenuBar>
-      <Text fill="#ee0b0b" layoutX="159.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Smart Hotel" wrappingWidth="316.46923828125">
-         <font>
-            <Font size="30.0" />
-         </font>
-      </Text>
-      <Text layoutX="279.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Menu">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Text>
+      <Label layoutX="280.0" layoutY="14.0" text="HELLO" />
+      <ToggleButton fx:id="toggleCurtainButton" layoutX="14.0" layoutY="49.0" mnemonicParsing="false" onAction="#toggleCurtainAction" text="Open curtain" />
+      <Circle fx:id="curtainLight" fill="DODGERBLUE" layoutX="61.0" layoutY="127.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
    </children>
-
 </AnchorPane>
