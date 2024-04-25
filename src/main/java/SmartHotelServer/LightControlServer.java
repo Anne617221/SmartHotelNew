@@ -105,11 +105,6 @@ public class LightControlServer {
     static class LightControlImpl extends LightcontrolserviceGrpc.LightcontrolserviceImplBase {
         @Override
         public void changeLightColor(ColorRequest request, StreamObserver<LightcontrolRespons> responseObserver){
-            String color = request.getColor();
-            LightcontrolRespons response = LightcontrolRespons.newBuilder().setMessage("Changing light color to " + color).build();
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
-
             try{
                 LightcontrolRespons message = LightcontrolRespons.newBuilder().setMessage("Turning on").build();
                 responseObserver.onNext(message);
@@ -161,5 +156,32 @@ public class LightControlServer {
 
         public void changeLightColor(ColorRequest request, io.grpc.stub.StreamObserver<LightcontrolRespons> responseObserver) {
         // Implement changeLightColor functionality here
+            String lightId = request.getLightId();
+            String newColor = request.getColor();
+
+            // Call your method to change the light color
+            boolean success = changeLightColorInSystem(lightId, newColor);
+
+            // Prepare the response
+            LightcontrolRespons response;
+            if (success) {
+                response = LightcontrolRespons.newBuilder()
+                        .setMessage("Light color changed successfully")
+                        .build();
+            } else {
+                response = LightcontrolRespons.newBuilder()
+                        .setMessage("Failed to change light color")
+                        .build();
+            }
+
+            // Send the response back to the client
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+
+    // Method to change light color in your system
+    private boolean changeLightColorInSystem(String lightId, String newColor) {
+
+        return true;
     }
 }
