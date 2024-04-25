@@ -4,11 +4,19 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.SmartHotelController">
    <children>
-      <Label layoutX="280.0" layoutY="14.0" text="HELLO" />
-      <ToggleButton fx:id="toggleCurtainButton" layoutX="14.0" layoutY="49.0" mnemonicParsing="false" onAction="#toggleCurtainAction" text="Open curtain" />
-      <Circle fx:id="curtainLight" fill="DODGERBLUE" layoutX="61.0" layoutY="127.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+      <Label layoutX="193.0" layoutY="14.0" prefHeight="42.0" prefWidth="180.0" text="Welcome to Smart Hotel" textFill="#da1010">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+      <ToggleButton fx:id="toggleCurtainButton" layoutX="23.0" layoutY="106.0" mnemonicParsing="false" onAction="#toggleCurtainAction" text="Open Curtain" />
+      <Circle fx:id="curtainLight" fill="DODGERBLUE" layoutX="67.0" layoutY="176.0" radius="18.0" stroke="BLACK" strokeType="INSIDE" />
+      <ToggleButton layoutX="214.0" layoutY="106.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Turn On Lights" />
+      <ToggleButton layoutX="421.0" layoutY="106.0" mnemonicParsing="false" text="Temperature" />
+      <ToggleButton layoutX="205.0" layoutY="158.0" mnemonicParsing="false" text="Change Lights Color" />
+      <ToggleButton layoutX="399.0" layoutY="158.0" mnemonicParsing="false" text="Current Temperature" />
    </children>
 </AnchorPane>
