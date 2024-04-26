@@ -19,7 +19,7 @@ public class LightControlServer {
     Server server;
 
     public void start() throws IOException {
-
+        //Start gRPC server
         server = ServerBuilder.forPort(PORT)
                 .addService(new LightControlImpl())
                 .build()
@@ -95,6 +95,7 @@ public class LightControlServer {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        //Start the light control server
         final LightControlServer server = new LightControlServer();
         server.start();
         server.blockUntilShutdown();
@@ -103,6 +104,7 @@ public class LightControlServer {
 
 
     static class LightControlImpl extends LightcontrolserviceGrpc.LightcontrolserviceImplBase {
+        //Implementation of the light control server
         @Override
         public void changeLightColor(ColorRequest request, StreamObserver<LightcontrolRespons> responseObserver){
             try{
@@ -118,7 +120,9 @@ public class LightControlServer {
 
 
     }
+    //create a StreamObserver to handle incoming ToggleRequest messages and sends corresponding Light control response message
     public StreamObserver<ToggleRequest> toggleLights(final StreamObserver<LightcontrolRespons> responseObserver) {
+       //Create and return a new StreamObserver for handing ToggleRequest messages
         return new StreamObserver<ToggleRequest>() {
             @Override
             public void onNext(ToggleRequest request) {
@@ -136,6 +140,7 @@ public class LightControlServer {
 
                 // Create and send the response
                 LightcontrolRespons response = LightcontrolRespons.newBuilder().setMessage(message).build();
+                //Send the message to the responseObserver
                 responseObserver.onNext(response);
             }
 
@@ -179,7 +184,7 @@ public class LightControlServer {
             responseObserver.onCompleted();
         }
 
-    // Method to change light color in your system
+    // Method to change light color in the system
     private boolean changeLightColorInSystem(String lightId, String newColor) {
 
         return true;
