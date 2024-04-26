@@ -19,6 +19,7 @@ public class SmartHotel {
     private final temperaturecontrolserviceGrpc.temperaturecontrolserviceStub temperatureStub;
 
     public SmartHotel(String curtainHost, int curtainPort, String lightHost, int lightPort, String temperatureHost, int temperaturePort) {
+        //Establish gRPC channels for three different service
         curtainChannel = ManagedChannelBuilder.forAddress(curtainHost, curtainPort)
                 .usePlaintext()
                 .build();
@@ -37,10 +38,11 @@ public class SmartHotel {
 
     // Method to toggle curtains
     public void toggleCurtain(String command) {
+        //Create request for curtain control
         SimpleCurtaincontrolRequest request = SimpleCurtaincontrolRequest.newBuilder()
                 .setMessage(command)
                 .build();
-
+        //Send request and print response
         SimpleCurtaincontrolResponse response = curtainStub.curtaincontrol(request);
 
         System.out.println("Response from curtain server: " + response.getMessage());
@@ -64,14 +66,14 @@ public class SmartHotel {
                 System.out.println("Request completed.");
             }
         };
-
+        //Create request observer for sending toggle request to light control
         StreamObserver<ToggleRequest> requestObserver = lightStub.toggleLights(responseObserver);
-
+        //Create toggle request for specified light
         ToggleRequest request = ToggleRequest.newBuilder()
                 .setLightId(lightId)
                 .setTurnOn(turnOn)
                 .build();
-
+        //Send toggle request to light control service
         requestObserver.onNext(request);
 
         // Mark the end of requests
@@ -80,6 +82,7 @@ public class SmartHotel {
 
     // Method to control temperature
     public void monitorTemperature() {
+        //Define observer for handing temperature stream response
         StreamObserver<TemperatureStreamRequest> requestObserver = temperatureStub.temperatureStream(new StreamObserver<TemperatureStreamResponse>() {
             @Override
             public void onNext(TemperatureStreamResponse response) {
@@ -101,9 +104,11 @@ public class SmartHotel {
 
         // Simulate sending temperature data
         for (double temperature = 20; temperature <= 40; temperature += 5) {
+            //Create temperature stream request with simulate temperature data
             TemperatureStreamRequest request = TemperatureStreamRequest.newBuilder()
                     .setTemperature(temperature)
                     .build();
+            //Send temperature stream request control service
             requestObserver.onNext(request);
             try {
                 Thread.sleep(1000); // Simulate sending temperature data every second
@@ -116,7 +121,9 @@ public class SmartHotel {
         requestObserver.onCompleted();
     }
 
+    //Method to gracefully shut down the client
     public void shutdown() throws InterruptedException {
+        //shut down the channel and await termination
         temperatureChannel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
 

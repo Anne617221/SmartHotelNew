@@ -20,7 +20,7 @@ public class CurtainControlServer {
     Server server;
 
     public void start() throws IOException {
-
+        //Start gRPC server
         server = ServerBuilder.forPort(PORT)
                 .addService(new CurtainControlImpl())
                 .build()
@@ -96,21 +96,25 @@ public class CurtainControlServer {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        //Start the curtain control server
         final CurtainControlServer server = new CurtainControlServer();
         server.start();
         server.blockUntilShutdown();
     }
 
-
+    //Implementation of the curtain control server
     static class CurtainControlImpl extends curtaincontrolserviceGrpc.curtaincontrolserviceImplBase {
         @Override
         public void curtaincontrol(SimpleCurtaincontrolRequest request,
                                    io.grpc.stub.StreamObserver<SimpleCurtaincontrolResponse> responseObserver) {
+           //Extract message from the request
             String message = request.getMessage();
             System.out.println("Received message: " + message);
+            //Create response message indicating the status the curtain
             SimpleCurtaincontrolResponse response = SimpleCurtaincontrolResponse.newBuilder()
                     .setMessage("Curtain is " + message)
                     .build();
+            //Send response to the client
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
