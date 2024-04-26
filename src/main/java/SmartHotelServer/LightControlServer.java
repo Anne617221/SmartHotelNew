@@ -49,7 +49,7 @@ public class LightControlServer {
         }
     }
 
-
+    //Registers the light control server  to consul service registry
     private void registerToConsul() {
         System.out.println("Registering light control server to Consul...");
 
@@ -101,8 +101,7 @@ public class LightControlServer {
         server.blockUntilShutdown();
     }
 
-
-
+    //Implementation of changeLightcolor gRPC method
     static class LightControlImpl extends LightcontrolserviceGrpc.LightcontrolserviceImplBase {
         //Implementation of the light control server
         @Override

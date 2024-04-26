@@ -50,7 +50,7 @@ public class CurtainControlServer {
         }
     }
 
-
+    //Registers the curtain control server  to consul service registry
     private void registerToConsul() {
         System.out.println("Registering curtain control server to Consul...");
 

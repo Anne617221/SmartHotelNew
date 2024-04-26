@@ -24,7 +24,7 @@ public  class TemperatureControlServer {
     Server server;
 
     private void start() throws IOException {
-
+        //Start gRPC server
         server = ServerBuilder.forPort(PORT)
                 .addService(new TemperatureControlServer.TemperatureControlImpl())
                 .build()
@@ -54,7 +54,7 @@ public  class TemperatureControlServer {
         }
     }
 
-
+    //Registers the temperature control server  to consul service registry
     private void registerToConsul() {
         System.out.println("Registering Temperature control server to Consul...");
 
@@ -99,13 +99,16 @@ public  class TemperatureControlServer {
         System.out.println("temperature control Server registered to Consul successfully. Host: " + hostAddress);
     }
 
+    //Main method to start
     public static void main(String[] args) throws IOException, InterruptedException {
         final TemperatureControlServer server = new TemperatureControlServer();
         server.start();
         server.blockUntilShutdown();
     }
 
+    //Implementation of the temperature control server
     static class TemperatureControlImpl extends temperaturecontrolserviceGrpc.temperaturecontrolserviceImplBase {
+        //Method to handle temperature control stream
         public void temperaturecontrolStream(TemperaturecontrolRequest request, StreamObserver<TemperaturecontrolResponse> responseObserver) {
             // Implement temperature control logic here
             // Example logic:
@@ -124,12 +127,13 @@ public  class TemperatureControlServer {
 
 
 
-        // Example method to get current temperature
+        // Method to get current temperature
         private double getCurrentTemperature() {
             // Implement logic to get current temperature from sensor
             return 20.0; // Dummy value for demonstration
         }
 
+        //Method to handle temperature stream
         @Override
         public StreamObserver<TemperatureStreamRequest> temperatureStream(StreamObserver<TemperatureStreamResponse> responseObserver) {
             return new StreamObserver<TemperatureStreamRequest>() {
@@ -163,6 +167,7 @@ public  class TemperatureControlServer {
         }
     }
 
+    //Block the main thread until the gRPC server is terminated
     private void awaitTermination() throws InterruptedException {
         if (server != null) {
             server.awaitTermination();
