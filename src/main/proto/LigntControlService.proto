@@ -10,7 +10,7 @@ service Lightcontrolservice {
   // Light turn on and off Client-side streaming RPC
   rpc ToggleLights(stream ToggleRequest) returns (LightcontrolRespons);
 
-  //
+  //change light color  Server-side streaming RPC
   rpc ChangeLightColor(ColorRequest) returns(stream LightcontrolRespons);
 
 }

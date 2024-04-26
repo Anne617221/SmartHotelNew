@@ -7,8 +7,9 @@ option java_package = "org.example.temperaturecontrol";
 option java_outer_classname = "temperaturecontrolserviceproto";
 
 service temperaturecontrolservice {
-  // LightControl streaming RPC
+  // Temperature control bidirectional streaming RPC
   rpc temperaturecontrolStream(stream TemperaturecontrolRequest) returns (stream TemperaturecontrolResponse);
+  //Temperature streaming RPC
   rpc temperatureStream(stream TemperatureStreamRequest) returns (stream TemperatureStreamResponse);
 
 }
