@@ -4,28 +4,13 @@ package org.example.temperaturecontrol;
 
 option java_multiple_files = true;
 option java_package = "org.example.temperaturecontrol";
-option java_outer_classname = "temperaturecontrolserviceproto";
+option java_outer_classname = "TemperatureControlServiceProto";
 
-service temperaturecontrolservice {
-  // Temperature control bidirectional streaming RPC
-  rpc temperaturecontrolStream(stream TemperaturecontrolRequest) returns (stream TemperaturecontrolResponse);
-  //Temperature streaming RPC
-  rpc temperatureStream(stream TemperatureStreamRequest) returns (stream TemperatureStreamResponse);
-
+service TemperatureControlService {
+  rpc temperatureStream(StreamTemperatureRequest) returns (stream TemperatureData);
 }
+message StreamTemperatureRequest {}
 
-message TemperaturecontrolRequest {
-  string message = 1;
-}
-
-message TemperaturecontrolResponse {
-  string message = 1;
-}
-
-message TemperatureStreamRequest {
+message TemperatureData{
   double temperature = 1;
-}
-
-message TemperatureStreamResponse {
-  bool turn_on_light = 1;
 }

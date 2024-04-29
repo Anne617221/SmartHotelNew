@@ -2,7 +2,7 @@ package SmartHotelServer;
 
 import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.agent.model.NewService;
-import  org.example.lightcontrol.*;
+import org.example.lightcontrol.*;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -11,15 +11,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
-
 
 public class LightControlServer {
     private static final int PORT = 8080;
     Server server;
 
     public void start() throws IOException {
-        //Start gRPC server
+        // Start gRPC server
         server = ServerBuilder.forPort(PORT)
                 .addService(new LightControlImpl())
                 .build()
@@ -49,7 +50,7 @@ public class LightControlServer {
         }
     }
 
-    //Registers the light control server  to consul service registry
+    // Registers the light control server to consul service registry
     private void registerToConsul() {
         System.out.println("Registering light control server to Consul...");
 
@@ -95,97 +96,55 @@ public class LightControlServer {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        //Start the light control server
+        // Start the light control server
         final LightControlServer server = new LightControlServer();
         server.start();
         server.blockUntilShutdown();
     }
 
-    //Implementation of changeLightcolor gRPC method
-    static class LightControlImpl extends LightcontrolserviceGrpc.LightcontrolserviceImplBase {
-        //Implementation of the light control server
+    // Implementation of changeLightcolor gRPC method
+    static class LightControlImpl extends LightControlServiceGrpc.LightControlServiceImplBase {
+        private final Map<String, LightingStatus> lightingStatusMap = new HashMap<>();
+
         @Override
-        public void changeLightColor(ColorRequest request, StreamObserver<LightcontrolRespons> responseObserver){
-            try{
-                LightcontrolRespons message = LightcontrolRespons.newBuilder().setMessage("Turning on").build();
-                responseObserver.onNext(message);
+        public StreamObserver<LightControlRequest> realTimeControl(
+                StreamObserver<LightControlResponse> responseObserver) {
+            return new StreamObserver<LightControlRequest>() {
+                @Override
+                public void onNext(LightControlRequest request) {
 
-                responseObserver.onCompleted();
-            }
-            catch (Exception e) {
-                responseObserver.onError(e);
-            }
-        }
-
-
-    }
-    //create a StreamObserver to handle incoming ToggleRequest messages and sends corresponding Light control response message
-    public StreamObserver<ToggleRequest> toggleLights(final StreamObserver<LightcontrolRespons> responseObserver) {
-       //Create and return a new StreamObserver for handing ToggleRequest messages
-        return new StreamObserver<ToggleRequest>() {
-            @Override
-            public void onNext(ToggleRequest request) {
-                // Handle the request
-                String lightId = request.getLightId();
-                boolean turnOn = request.getTurnOn();
-
-                // Simulate toggling the light
-                String message;
-                if (turnOn) {
-                    message = "Turned on light " + lightId;
-                } else {
-                    message = "Turned off light " + lightId;
+                    LightControlResponse response = LightControlResponse.newBuilder()
+                            .setDeviceId(request.getDeviceId())
+                            .setStatus("Received request: " + request)
+                            .build();
+                    responseObserver.onNext(response);
                 }
 
-                // Create and send the response
-                LightcontrolRespons response = LightcontrolRespons.newBuilder().setMessage(message).build();
-                //Send the message to the responseObserver
-                responseObserver.onNext(response);
-            }
+                @Override
+                public void onError(Throwable t) {
+                    // Handle errors
+                    System.err.println("Error in RealTimeControl: " + t);
+                }
 
-            @Override
-            public void onError(Throwable t) {
-                // Handle errors
-                System.err.println("Error: " + t.getMessage());
-            }
+                @Override
+                public void onCompleted() {
 
-            @Override
-            public void onCompleted() {
-                // Finish the response
-                responseObserver.onCompleted();
-            }
-        };
-    }
-
-
-        public void changeLightColor(ColorRequest request, io.grpc.stub.StreamObserver<LightcontrolRespons> responseObserver) {
-        // Implement changeLightColor functionality here
-            String lightId = request.getLightId();
-            String newColor = request.getColor();
-
-            // Call your method to change the light color
-            boolean success = changeLightColorInSystem(lightId, newColor);
-
-            // Prepare the response
-            LightcontrolRespons response;
-            if (success) {
-                response = LightcontrolRespons.newBuilder()
-                        .setMessage("Light color changed successfully")
-                        .build();
-            } else {
-                response = LightcontrolRespons.newBuilder()
-                        .setMessage("Failed to change light color")
-                        .build();
-            }
-
-            // Send the response back to the client
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
+                    responseObserver.onCompleted();
+                }
+            };
         }
 
-    // Method to change light color in the system
-    private boolean changeLightColorInSystem(String lightId, String newColor) {
+        @Override
+        public void monitorLighting(MonitorRequest request, StreamObserver<LightingStatus> responseObserver) {
 
-        return true;
+            LightingStatus status = LightingStatus.newBuilder()
+                    .setDeviceId(request.getDeviceId())
+                    .setBrightness(50)
+                    .setPower(true)
+                    .build();
+            responseObserver.onNext(status);
+            responseObserver.onCompleted();
+        }
     }
+
 }

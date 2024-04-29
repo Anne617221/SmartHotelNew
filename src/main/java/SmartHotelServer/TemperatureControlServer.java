@@ -1,6 +1,5 @@
 package SmartHotelServer;
 
-
 import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.agent.model.NewService;
 import io.grpc.Server;
@@ -8,25 +7,22 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import org.example.temperaturecontrol.*;
 
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
-public  class TemperatureControlServer {
+public class TemperatureControlServer {
     private static final int PORT = 8082;
-    //private static final int Temperature_check_interval=15*60*1000;
+    // private static final int Temperature_check_interval=15*60*1000;
 
     Server server;
 
     private void start() throws IOException {
-        //Start gRPC server
+        // Start gRPC server
         server = ServerBuilder.forPort(PORT)
-                .addService(new TemperatureControlServer.TemperatureControlImpl())
+                .addService(new TemperatureControlImpl())
                 .build()
                 .start();
         System.out.println("Server started, listening on " + PORT);
@@ -54,7 +50,7 @@ public  class TemperatureControlServer {
         }
     }
 
-    //Registers the temperature control server  to consul service registry
+    // Registers the temperature control server to consul service registry
     private void registerToConsul() {
         System.out.println("Registering Temperature control server to Consul...");
 
@@ -99,78 +95,50 @@ public  class TemperatureControlServer {
         System.out.println("temperature control Server registered to Consul successfully. Host: " + hostAddress);
     }
 
-    //Main method to start
+    // Main method to start
     public static void main(String[] args) throws IOException, InterruptedException {
         final TemperatureControlServer server = new TemperatureControlServer();
         server.start();
         server.blockUntilShutdown();
     }
 
-    //Implementation of the temperature control server
-    static class TemperatureControlImpl extends temperaturecontrolserviceGrpc.temperaturecontrolserviceImplBase {
-        //Method to handle temperature control stream
-        public void temperaturecontrolStream(TemperaturecontrolRequest request, StreamObserver<TemperaturecontrolResponse> responseObserver) {
-            // Implement temperature control logic here
-            // Example logic:
-            double temperature = getCurrentTemperature();
-            if (temperature < 17) {
-                // Turn on
-                TemperaturecontrolResponse response = TemperaturecontrolResponse.newBuilder().setMessage("Turning on").build();
-                responseObserver.onNext(response);
-            } else if (temperature > 25) {
-                // Turn off
-                TemperaturecontrolResponse response = TemperaturecontrolResponse.newBuilder().setMessage("Turning off").build();
-                responseObserver.onNext(response);
-            }
-            responseObserver.onCompleted();
-        }
-
-
-
-        // Method to get current temperature
-        private double getCurrentTemperature() {
-            // Implement logic to get current temperature from sensor
-            return 20.0; // Dummy value for demonstration
-        }
-
-        //Method to handle temperature stream
+    // Implementation of the temperature control server
+    static class TemperatureControlImpl extends TemperatureControlServiceGrpc.TemperatureControlServiceImplBase {
         @Override
-        public StreamObserver<TemperatureStreamRequest> temperatureStream(StreamObserver<TemperatureStreamResponse> responseObserver) {
-            return new StreamObserver<TemperatureStreamRequest>() {
-                @Override
-                public void onNext(TemperatureStreamRequest request) {
-                    double temperature = request.getTemperature();
-                    System.out.println("Received temperature data: " + temperature);
+        public void temperatureStream(StreamTemperatureRequest request,
+                StreamObserver<TemperatureData> responseObserver) {
+            try {
+                // Generate an array of temperatures to stream
+                double[] temperatures = generateTemperatures();
 
-                    // Determine whether to turn on/off the light based on temperature
-                    boolean turnOnLight = temperature > 30; // Example condition, adjust as needed
-
-                    // Send the response to control light
-                    TemperatureStreamResponse response = TemperatureStreamResponse.newBuilder()
-                            .setTurnOnLight(turnOnLight)
+                // Stream each temperature to the client
+                for (double temperature : temperatures) {
+                    TemperatureData temperatureData = TemperatureData.newBuilder()
+                            .setTemperature(temperature)
                             .build();
+                    responseObserver.onNext(temperatureData);
 
-                    responseObserver.onNext(response);
+                    // Simulate some delay between each temperature
+                    Thread.sleep(1000); // 1 second delay
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                responseObserver.onError(e);
+            } finally {
+                responseObserver.onCompleted();
+            }
+        }
 
-                @Override
-                public void onError(Throwable t) {
-                    System.err.println("Temperature Control Stream Error: " + t.getMessage());
-                }
+        // Method to generate an array of temperatures
+        private double[] generateTemperatures() {
 
-                @Override
-                public void onCompleted() {
-                    System.out.println("Temperature Control Stream completed.");
-                    responseObserver.onCompleted();
-                }
-            };
+            int numTemperatures = 30; // Number of temperatures to generate
+            double[] temperatures = new double[numTemperatures];
+            for (int i = 0; i < numTemperatures; i++) {
+                temperatures[i] = 20 + Math.random() * 10; // Generate temperatures between 20 to 30 degrees Celsius
+            }
+            return temperatures;
         }
     }
 
-    //Block the main thread until the gRPC server is terminated
-    private void awaitTermination() throws InterruptedException {
-        if (server != null) {
-            server.awaitTermination();
-        }
-    }
-    }
+}
